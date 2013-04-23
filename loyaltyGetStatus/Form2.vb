@@ -17,24 +17,6 @@ Namespace loayltyGetStatus
 
 
 
-        Private Sub button2_Click(sender As Object, e As EventArgs)
-
-        End Sub
-
-
-
-
-
-        Private Sub button4_Click(sender As Object, e As EventArgs)
-
-        End Sub
-
-        Private Sub textBox2_TextChanged(sender As Object, e As EventArgs)
-
-
-        End Sub
-
-
 
         Private Sub Form2_Load(sender As Object, e As EventArgs)
 
@@ -54,8 +36,99 @@ Namespace loayltyGetStatus
 
 
         Private Sub button2_Click_1(sender As System.Object, e As System.EventArgs) Handles button2.Click
+            Try
+
+                'A Basic GetStatus()
+                Dim url As String = "http://api.cert.mercuryloyalty.com/v3_0/loyalty/GetStatus/?apikey=PAUL&apisecret=f2ee0e69a14c45039c6041b19fd18d88&customeridentifier=4076374996"
+                Dim httpWebRequest = DirectCast(WebRequest.Create(url), HttpWebRequest)
+                httpWebRequest.ContentType = "text/xml"
+                httpWebRequest.Method = WebRequestMethods.Http.[Get]
+                Dim response = DirectCast(httpWebRequest.GetResponse(), HttpWebResponse)
+                Dim responseStream As Stream = response.GetResponseStream()
+                Dim responseReader As New StreamReader(responseStream)
+                Dim responseString As String = responseReader.ReadToEnd()
+                Dim xmlDoc As New XmlDocument()
+                xmlDoc.LoadXml(responseString)
+                '* Get elements.
+                Dim emailAddress As String = xmlDoc.GetElementsByTagName("EmailAddress")(0).InnerText
+                Dim firstName As String = xmlDoc.GetElementsByTagName("FirstName")(0).InnerText
+                Dim lastName As String = xmlDoc.GetElementsByTagName("LastName")(0).InnerText
+                Dim mobileNumber As String = xmlDoc.GetElementsByTagName("MobileNumber")(0).InnerText
+                Dim currentCredits As String = xmlDoc.GetElementsByTagName("CurrentCredits")(0).InnerText
+                Dim lifeTimeCredits As String = xmlDoc.GetElementsByTagName("LifetimeCredits")(0).InnerText
+                Dim lifeTimeRevenue As String = xmlDoc.GetElementsByTagName("LifetimeRevenue")(0).InnerText
+                Dim rewardsEarned As String = xmlDoc.GetElementsByTagName("RewardsEarned")(0).InnerText
+
+
+                textBox1.Text = ""
+                textBox1.AppendText("Email: " & emailAddress)
+                textBox1.AppendText(Environment.NewLine)
+
+                textBox1.AppendText("First Name: " & firstName)
+                textBox1.AppendText(Environment.NewLine)
+
+                textBox1.AppendText("Last Name: " & lastName)
+                textBox1.AppendText(Environment.NewLine)
+
+                textBox1.AppendText("Mobile Number: " & mobileNumber)
+                textBox1.AppendText(Environment.NewLine)
+
+                textBox1.AppendText("Current Credits: " & currentCredits)
+                textBox1.AppendText(Environment.NewLine)
+
+                textBox1.AppendText("Lifetime Credits: " & lifeTimeCredits)
+                textBox1.AppendText(Environment.NewLine)
+
+
+                textBox1.AppendText("Lifetime Revenue: " & lifeTimeRevenue)
+                textBox1.AppendText(Environment.NewLine)
+
+                textBox1.AppendText("Rewards Earned: " & rewardsEarned)
+                textBox1.AppendText(Environment.NewLine)
+
+
+                textBox3.Text = url
+            Catch ex As Exception
+                textBox1.Text = ""
+                textBox1.AppendText("An Error has Occured: ")
+                textBox1.AppendText(Environment.NewLine)
+                textBox1.AppendText(ex.Message)
+                textBox1.AppendText(Environment.NewLine)
+            End Try
+        End Sub
+
+
+
+        Private Sub button4_Click(sender As System.Object, e As System.EventArgs) Handles button4.Click
+            Try
+
+                Dim url2 As String = "https://api.cert.mercuryloyalty.com/v3_0/loyalty/AddCredits/?apikey=PAUL&apisecret=f2ee0e69a14c45039c6041b19fd18d88&units=10&description=AddCredits&employee_id=1&station_id=1&ticket_id=2012-10-18-10-54-44-101&revenue=10&client=MERCURY&version=1.0.3.822&customeridentifier=4075554997"
+                Dim httpWebRequest = DirectCast(WebRequest.Create(url2), HttpWebRequest)
+                httpWebRequest.Method = WebRequestMethods.Http.[Get]
+                Dim response = DirectCast(httpWebRequest.GetResponse(), HttpWebResponse)
+                Dim responseStream As Stream = response.GetResponseStream()
+                Dim responseReader As New StreamReader(responseStream)
+                Dim responseString As String = responseReader.ReadToEnd()
+                Dim xmlDoc As New XmlDocument()
+                xmlDoc.LoadXml("<root>" & responseString & "</root>")
+                Dim address As XmlNodeList = xmlDoc.GetElementsByTagName("original")
+                textBox1.Text = responseString
+                textBox3.Text = url2
+            Catch ex As Exception
+
+
+                textBox1.Text = ""
+                textBox1.AppendText("An Error has Occured: ")
+                textBox1.AppendText(Environment.NewLine)
+                textBox1.AppendText(ex.Message)
+
+
+                textBox1.AppendText(Environment.NewLine)
+            End Try
+
 
         End Sub
+
         Private Sub InitializeComponent()
             Me.label3 = New System.Windows.Forms.Label()
             Me.button2 = New System.Windows.Forms.Button()
@@ -146,5 +219,7 @@ Namespace loayltyGetStatus
             Me.PerformLayout()
 
         End Sub
+
+        
     End Class
 End Namespace
